@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AR_Hydra_Tutorial</title>
+
+    <!-- load AFRAME + MindAR + p5.js + hydra-synth + your sketch -->
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.0/dist/mindar-image-aframe.prod.js"></script>
+    <!-- oficial p5 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <!-- unoficial p5 -->
+    <!-- <script src="https://cdn.statically.io/gh/museumhotel/hydra_mg_tutorial/main/libs/p5.min.js"></script> -->
+    <script src="https://unpkg.com/hydra-synth"></script>
+    <script src="sketch.js"></script>
+
+    <!-- Register "canvas-updater" AFRAME component and call the tick method -->
+    <script type="text/javascript">
+      AFRAME.registerComponent("canvas-updater", {
+        dependencies: ["geometry", "material"],
+
+        tick: function () {
+          let material,
+            el = this.el;
+
+          material = el.getObject3D("mesh").material;
+          if (!material.map) {
+            return;
+          }
+          material.map.needsUpdate = true;
+        },
+      });
+    </script>
+  </head>
+  <body>
+    <!-- canvas containing the p5.js poster graphics -->
+    <canvas id="canvas"></canvas>
+
+    <!-- hydra visualisation canvas hidden -->
+    <canvas id="hydra_canvas" style="visibility: hidden"></canvas>
+
+    <!-- MindAR + AFRAME tracking within a-scene -->
+    <a-scene
+      mindar-image="imageTargetSrc: https://cdn.glitch.global/ea61c5ab-26cf-45ec-9524-2f17ab8c295f/mind_test_target.mind?v=1688944051226; filterMinCF:0.0005; filterBeta: 0.1;"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-entity id="example-target" mindar-image-target="targetIndex: 0">
+        <a-plane
+          position="0 0 0"
+          scale="1.05 1.05 1.05 "
+          height="1.4145"
+          width="1"
+          rotation="0 0 0"
+          material="src:#canvas"
+          canvas-updater
+        ></a-plane>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
